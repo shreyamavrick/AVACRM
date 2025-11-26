@@ -26,7 +26,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative w-full overflow-hidden"
+      className="relative w-full mt-5 overflow-hidden"
       style={{
         background:
           "linear-gradient(90deg, rgba(249,186,28,0.12) 25%, rgba(28,142,206,0.12) 100%)",

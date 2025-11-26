@@ -124,24 +124,24 @@ export default function TestimonialSliderPremium() {
         <div className="relative">
 
           {/* LEFT ARROW */}
-          <button
+          {/* <button
             onClick={prev}
             className="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 bg-white rounded-full flex items-center justify-center text-slate-700 shadow-md border border-blue-300"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
               <path d="M12.7 14.7a1 1 0 01-1.4 0L7 10.4a1 1 0 010-1.4l4.3-4.3a1 1 0 111.4 1.4L9.4 9.9l3.3 3.3a1 1 0 010 1.5z" />
             </svg>
-          </button>
+          </button> */}
 
           {/* RIGHT ARROW */}
-          <button
+          {/* <button
             onClick={next}
             className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 bg-white rounded-full flex items-center justify-center text-slate-700 shadow-md border border-blue-300"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
               <path d="M7.3 5.3a1 1 0 011.4 0L13 9.6a1 1 0 010 1.4l-4.3 4.3a1 1 0 11-1.4-1.4L10.6 11 7.3 7.7a1 1 0 010-1.4z" />
             </svg>
-          </button>
+          </button> */}
 
           {/* VIEWPORT */}
           <div className="overflow-hidden">

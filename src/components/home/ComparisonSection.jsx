@@ -1,3 +1,4 @@
+// src/components/ComparisonSection.jsx
 import React, { useMemo } from "react";
 import logo from "../../assets/logo1.png";
 
@@ -10,10 +11,7 @@ import calendarIcon from "../../assets/calendar.png";
 import targetIcon from "../../assets/target.png";
 
 /**
- * ComparisonSection — Left icons are now "scattered"
- *
- * NOTE: reference image you uploaded is available at:
- * /mnt/data/Screenshot 2025-11-25 165321.png
+ * ComparisonSection — left icons autoplay: attempt-to-form-circle -> scatter -> repeat
  */
 
 export default function ComparisonSection() {
@@ -35,35 +33,28 @@ export default function ComparisonSection() {
   const outerRadius = 130;
   const innerRadius = 85;
 
-  // LEFT: create more natural scattered final positions (bounded)
+  // deterministic-ish positional jitter for left scattered final coords
   const leftFinals = useMemo(() => {
     const n = icons.length;
-    const baseY = 200; // px from top of the 300px icon area
-    // helper: deterministic-ish randomness using index (keeps positions stable across renders)
+    const baseY = 200;
     const rand = (seed, min, max) => {
-      // simple seeded pseudo-random (sine)
       const x = Math.sin(seed * 999.123 + 13.37) * 10000;
       const r = x - Math.floor(x);
       return min + r * (max - min);
     };
 
     return icons.map((_, i) => {
-      // evenly spaced baseline across width, then add jitter in percent (-12..+12)
       const baselinePercent = ((i + 1) / (n + 1)) * 100;
       const jitterPercent = rand(i + 1, -12, 12);
       let fxPercent = baselinePercent + jitterPercent;
-      // clamp to [6, 94] so icons stay inside container
       fxPercent = Math.max(6, Math.min(94, fxPercent));
 
-      // Y: baseY with stronger jitter (-40..+30)
       const fyJitter = Math.round(rand(i + 10, -40, 30));
       let fyPx = baseY + fyJitter;
-      // clamp Y to reasonable bounds inside 300px area
       fyPx = Math.max(130, Math.min(260, fyPx));
 
-      // small rotation and scale for natural feel
-      const rot = Math.round(rand(i + 20, -14, 14)); // degrees
-      const scale = (rand(i + 30, 0.92, 1.12)).toFixed(2);
+      const rot = Math.round(rand(i + 20, -14, 14));
+      const scale = (rand(i + 30, 0.88, 1.12)).toFixed(2);
 
       return {
         fx: `${fxPercent}%`,
@@ -90,11 +81,13 @@ export default function ComparisonSection() {
             <span className="font-semibold block mt-3">You are losing money!</span>
           </p>
 
-          {/* LEFT: icons orbit briefly, then fall into scattered positions inside this container */}
+          {/* LEFT: icons attempt to form circle then scatter (autoplay loop) */}
           <div className="relative mt-8" style={{ height: 300 }}>
             {icons.map((it, i) => {
               const initialAngle = (i / icons.length) * 360;
-              const final = leftFinals[i] || { fx: `${(i+1)*12}%`, fy: `200px`, rot: "0deg", scale: "1" };
+              const final = leftFinals[i] || { fx: `${(i + 1) * 12}%`, fy: `200px`, rot: "0deg", scale: "1" };
+
+              // low fixed z-index so icons won't overlap navbar on scroll
               const style = {
                 "--init-angle": `${initialAngle}deg`,
                 "--init-r": `28px`,
@@ -103,7 +96,7 @@ export default function ComparisonSection() {
                 "--final-rot": final.rot,
                 "--final-scale": final.scale,
                 animationDelay: `${i * 0.12}s`,
-                zIndex: 100 - i,
+                zIndex: 12,
               };
 
               return (
@@ -112,7 +105,7 @@ export default function ComparisonSection() {
                   className="left-orbit-fall-wrapper"
                   style={style}
                 >
-                  <div className="left-icon-spot">
+                  <div className="left-icon-spot" aria-hidden>
                     <img
                       src={it.src}
                       alt={it.name}
@@ -223,17 +216,21 @@ export default function ComparisonSection() {
           background-blend-mode: overlay;
         }
 
-        /* LEFT: orbit a bit then drop to final coords (left/top) with small final rotation & scale */
+        /* LEFT: Looping attempt-to-form-circle then scatter */
         .left-orbit-fall-wrapper {
           position: absolute;
           left: 50%;
-          top: 6%;
+          top: 8%;
           width: 48px;
           height: 48px;
           transform: translate(-50%, -50%);
           transform-origin: center center;
-          animation: left-orbit-then-fall 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+          z-index: 12 !important; /* keep low so navbar stays above */
+          /* infinite autoplay loop */
+          animation: left-attempt-then-scatter 3.6s cubic-bezier(0.2,0.85,0.22,1) infinite;
+          will-change: transform, left, top, opacity;
         }
+
         .left-icon-spot {
           width: 48px;
           height: 48px;
@@ -245,46 +242,69 @@ export default function ComparisonSection() {
           box-shadow: 0 10px 30px rgba(2, 6, 23, 0.12);
           transition: transform 220ms ease;
         }
-        /* during animation we move to --fx/--fy then apply final rotation & scale */
-        @keyframes left-orbit-then-fall {
+
+        /*
+          Animation timeline (looped):
+          0%   - 18% : orbiting near top
+          18%  - 40% : converge to center (form circle)
+          40%  - 72% : explode/scatter toward final positions
+          72%  - 90% : settle with rotation/scale
+          90%  -100% : pause at start (smooth reset)
+        */
+        @keyframes left-attempt-then-scatter {
           0% {
             left: 50%;
             top: 6%;
-            transform: translate(-50%, -50%) rotate(var(--init-angle, 0deg)) translate(0, -var(--init-r, 24px)) rotate(calc(-1 * var(--init-angle, 0deg)));
+            transform: translate(-50%, -50%) rotate(var(--init-angle, 0deg)) translate(0, -var(--init-r, 24px));
             opacity: 1;
           }
-          45% {
+
+          18% {
+            left: 50%;
+            top: 20%;
+            transform: translate(-50%, -50%) rotate(calc(var(--init-angle, 0deg) + 240deg)) translate(0, -calc(var(--init-r, 24px) * 0.6));
+            opacity: 1;
+          }
+
+          40% {
+            /* converge to center area (forming a neat circle) */
+            left: 50%;
+            top: 42%;
+            transform: translate(-50%, -50%) scale(0.95);
+            opacity: 1;
+          }
+
+          55% {
+            /* begin scatter */
+            left: calc(var(--fx));
+            top: calc(var(--fy) - 18px);
+            transform: translate(-50%, -50%) scale(1.06);
+            opacity: 1;
+          }
+
+          72% {
+            left: calc(var(--fx));
+            top: calc(var(--fy) + 6px);
+            transform: translate(-50%, -50%) rotate(calc(var(--final-rot, 0deg))) scale(calc(var(--final-scale, 1) * 0.98));
+            opacity: 1;
+          }
+
+          90% {
             left: 50%;
             top: 6%;
-            transform: translate(-50%, -50%) rotate(calc(var(--init-angle, 0deg) + 360deg)) translate(0, -var(--init-r, 24px)) rotate(calc(-1 * (var(--init-angle, 0deg) + 360deg)));
-          }
-          65% {
-            left: var(--fx);
-            top: calc(var(--fy) + 22px);
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) rotate(var(--init-angle, 0deg)) translate(0, -var(--init-r, 24px));
             opacity: 1;
           }
-          85% {
-            left: var(--fx);
-            top: calc(var(--fy) - 6px);
-            transform: translate(-50%, -50%);
-            opacity: 1;
-          }
-          96% {
-            left: var(--fx);
-            top: var(--fy);
-            transform: translate(-50%, -50%) rotate(var(--final-rot, 0deg)) scale(var(--final-scale, 1));
-            opacity: 1;
-          }
+
           100% {
-            left: var(--fx);
-            top: var(--fy);
-            transform: translate(-50%, -50%) rotate(var(--final-rot, 0deg)) scale(var(--final-scale, 1));
+            left: 50%;
+            top: 6%;
+            transform: translate(-50%, -50%) rotate(var(--init-angle, 0deg)) translate(0, -var(--init-r, 24px));
             opacity: 1;
           }
         }
 
-        /* RIGHT orbiting logic */
+        /* RIGHT orbiting logic (unchanged) */
         .orbit-icon-wrapper {
           position: absolute;
           top: 50%;

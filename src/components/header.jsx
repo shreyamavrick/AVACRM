@@ -68,7 +68,7 @@ export default function Header() {
           height: HEADER_HEIGHT_PX,
         }}
       >
-        <div className="mx-auto max-w-6xl px-6 h-full flex items-center pointer-events-auto">
+        <div className="mx-auto max-w-6xl px-6 pb-12 pt-8 h-full flex items-center pointer-events-auto">
           <div
             className={`w-full rounded-3xl transition-all duration-300 flex items-center justify-between
               ${scrolled ? "bg-white/95 shadow-2xl border border-white/40" : "bg-white/95 shadow-lg border border-white/30"}
