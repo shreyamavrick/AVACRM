@@ -4,6 +4,7 @@ import Header from "./components/header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import Pricing from "./pages/pricing";
+import HowToUse from "./pages/howToUse";
 import Footer from "./components/footer";
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/how-to-use" element={<HowToUse />} />
       </Routes>
       <Footer />
     </Router>

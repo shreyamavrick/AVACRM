@@ -56,7 +56,6 @@ const testimonials = [
   },
 ];
 
-/* ---------- Avatar Component ---------- */
 function Avatar({ initials, bg }) {
   return (
     <div
@@ -69,13 +68,11 @@ function Avatar({ initials, bg }) {
   );
 }
 
-/* ---------- MAIN SLIDER (Compact Premium) ---------- */
 export default function TestimonialSliderPremium() {
   const [index, setIndex] = useState(0);
   const wrapperRef = useRef(null);
   const SLIDE_COUNT = testimonials.length;
 
-  /* Set slide widths on mount */
   useEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
@@ -89,7 +86,6 @@ export default function TestimonialSliderPremium() {
     wrapper.style.transform = `translateX(-${(index * 100) / SLIDE_COUNT}%)`;
   }, []);
 
-  /* Update on index change */
   useEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
@@ -98,7 +94,7 @@ export default function TestimonialSliderPremium() {
     wrapper.style.transform = `translateX(-${(index * 100) / SLIDE_COUNT}%)`;
   }, [index]);
 
-  /* Continuous autoplay (NO PAUSE ON HOVER) */
+  
   useEffect(() => {
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % SLIDE_COUNT);
