@@ -1,14 +1,6 @@
 // src/components/PricingSection.jsx
 import React from "react";
 
-/**
- * Single-file PricingSection (complete)
- * - Contains data, PlanCard, ComparisonTable, and exported PricingSection component
- * - Tailwind classes used. Drop into src/components and import into your page.
- */
-
-/* ---------------------- Data: Plans & Full Feature Matrix ---------------------- */
-
 const plans = [
   {
     id: "standard",
@@ -22,7 +14,7 @@ const plans = [
       "Pipeline automation",
       "Standard reports & dashboards",
     ],
-    cta: { label: "Sign Up Now", href: "/signup?plan=standard" },
+    cta: { label: "Sign Up Now", href: "/login" },
   },
   {
     id: "premium",
@@ -36,7 +28,7 @@ const plans = [
       "Call tracking & call recording",
       "Document generation (proposals & invoices)",
     ],
-    cta: { label: "Start Free Trial", href: "/signup?plan=premium" },
+    cta: { label: "Sign Up Now", href: "/login" },
     featured: true,
   },
   {
@@ -51,16 +43,10 @@ const plans = [
       "Billing system (integrated)",
       "Team Collaboration System",
     ],
-    cta: { label: "Contact Sales", href: "/contact-sales" },
+    cta: { label: "Sign Up Now", href: "/login" },
   },
 ];
 
-/**
- * featureRows: full ordered list of features as shown in your reference.
- * Each row uses:
- *  - boolean true/false if presence,
- *  - or string value (like records limits).
- */
 const featureRows = [
   { feature: "Lead, contact and deal management", standard: true, premium: true, diamond: true },
   { feature: "Task & follow-up system", standard: true, premium: true, diamond: true },
@@ -105,7 +91,7 @@ function IconCheck({ on }) {
 function PlanCard({ plan }) {
   if (!plan) {
     return (
-      <div className="rounded-2xl shadow p-6 bg-white">
+      <div className="rounded-2xl shadow p-6 bg-white h-full">
         <div className="text-sm text-slate-500">No plan data</div>
       </div>
     );
@@ -113,35 +99,50 @@ function PlanCard({ plan }) {
 
   const { name, price, subtitle, highlights = [], cta = {}, featured } = plan;
 
-  return (
-    <div className={`rounded-2xl overflow-hidden ${featured ? "scale-[1.03] lg:scale-105 z-10" : ""}`}>
-      <div className={`p-6 lg:p-8 bg-white shadow-lg relative`}>
-        {/* optional badge for featured center card */}
-        {/* {featured && (
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-            <div className="bg-[#1C8ECE] text-white px-4 py-1 rounded-full text-sm font-semibold shadow">Recommended</div>
-          </div>
-        )} */}
+  // Background + text color based on featured flag:
+  const wrapperBgClass = featured ? "bg-[#0b79d8]" : "bg-white";
+  const textPrimary = featured ? "text-white" : "text-slate-900";
+  const textMuted = featured ? "text-blue-100" : "text-slate-500";
+  const highlightText = featured ? "text-blue-50" : "text-slate-700";
+  const btnClass = featured
+    ? "bg-white text-[#1C8ECE] hover:opacity-95"
+    : "bg-[#1C8ECE]/95 text-white hover:bg-[#157fb6]";
 
-        <div className="pt-4">
-          <div className="text-sm font-medium text-slate-500">{name}</div>
-          <div className="mt-3 text-2xl font-bold text-slate-900">{price}</div>
-          <div className="text-xs text-slate-500 mt-1">{subtitle}</div>
+  return (
+    <div className="relative rounded-3xl h-full flex-1">
+
+      <div
+        className={`pt-8 pb-8 px-6 lg:px-8 rounded-3xl shadow-lg border border-transparent ${wrapperBgClass} h-full flex flex-col justify-between`}
+        role="article"
+      >
+        <div>
+          {/* title block */}
+          <div className="flex items-start gap-4">
+            <div>
+              <div className={`text-sm font-medium ${textMuted}`}>{name}</div>
+              <div className={`mt-2 text-2xl font-bold ${textPrimary}`}>{price}</div>
+              {subtitle && <div className={`text-xs ${textMuted} mt-1`}>{subtitle}</div>}
+            </div>
+          </div>
+
+          {/* highlights */}
+          <ul className="mt-6 space-y-3">
+            {highlights.map((h, idx) => (
+              <li key={idx} className="flex items-start gap-3 text-sm">
+                <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full ${featured ? "bg-white text-[#1C8ECE]" : "bg-[#1C8ECE] text-white"} text-xs`}>
+                  ✓
+                </span>
+                <span className={`${highlightText}`}>{h}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <ul className="mt-5 space-y-3">
-          {highlights.map((h, idx) => (
-            <li key={idx} className="flex items-start gap-3 text-sm">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1C8ECE] text-white text-xs">✓</span>
-              <span className="text-slate-700">{h}</span>
-            </li>
-          ))}
-        </ul>
-
+        {/* CTA */}
         <div className="mt-6">
           <a
             href={cta.href || "#"}
-            className={`inline-block w-full text-center px-4 py-2 rounded-full text-white font-medium ${featured ? "bg-[#1C8ECE]" : "bg-[#1C8ECE]/95 hover:bg-[#157fb6]"}`}
+            className={`inline-block w-full text-center px-4 py-2 rounded-full font-medium transition ${btnClass}`}
           >
             {cta.label || "Choose"}
           </a>
@@ -175,7 +176,7 @@ function ComparisonTable({ rows }) {
               <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}>
                 <td className="py-3 px-4 align-top text-sm text-slate-700">{r.feature}</td>
                 <td className="py-3 px-4 align-top text-sm">
-                  {typeof r.standard === "boolean" ? <IconCheck on={r.standard} onProp={r.standard} /> : <span className="text-slate-700">{r.standard}</span>}
+                  {typeof r.standard === "boolean" ? <IconCheck on={r.standard} /> : <span className="text-slate-700">{r.standard}</span>}
                 </td>
                 <td className="py-3 px-4 align-top text-sm">
                   {typeof r.premium === "boolean" ? <IconCheck on={r.premium} /> : <span className="text-slate-700">{r.premium}</span>}
@@ -207,9 +208,9 @@ export default function PricingSection() {
         </div>
 
         {/* Plan cards */}
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 items-end">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {plans.map((p) => (
-            <div key={p.id} className="flex">
+            <div key={p.id} className={`flex h-full ${p.featured ? "" : ""}`}>
               <PlanCard plan={p} />
             </div>
           ))}

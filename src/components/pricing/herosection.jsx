@@ -1,5 +1,7 @@
 import React from "react";
 import HeroCombined from "../../assets/phero.png";
+import { Link } from "react-router-dom";
+
 
 export default function HeroSection() {
   return (
@@ -57,12 +59,16 @@ export default function HeroSection() {
             </ul>
 
             <div className="mt-6 sm:mt-10">
-              <button
-                className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-full text-white font-medium shadow-md"
-                style={{ backgroundColor: "#1C8ECE" }}
-              >
-                Book Your Demo Now
-              </button>
+              <div className="mt-6 sm:mt-10">
+  <Link
+    to="/login"
+    className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-full text-white font-medium shadow-md"
+    style={{ backgroundColor: "#1C8ECE" }}
+  >
+    Book Your Demo Now
+  </Link>
+</div>
+
             </div>
           </div>
 

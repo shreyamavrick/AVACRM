@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
-/* ---------- IMPORTED SVG ICONS ---------- */
 import icon1 from "../../assets/p.svg";
 import icon2 from "../../assets/g.svg";
 import icon3 from "../../assets/d.svg";
 import icon4 from "../../assets/go.svg";
 import icon5 from "../../assets/s.svg";
 
-/* ---------- SLIDES DATA ---------- */
 const slides = [
   {
     id: 1,
@@ -59,7 +58,6 @@ export default function FeaturesVerticalSliderFinal() {
   const touchStartY = useRef(null);
   const touchCurrentY = useRef(null);
 
-  /* ---------- Auto height + resize responsiveness ---------- */
   useEffect(() => {
     const applyHeights = () => {
       const h = getCardHeight();
@@ -84,7 +82,6 @@ export default function FeaturesVerticalSliderFinal() {
     return () => window.removeEventListener("resize", applyHeights);
   }, [index]);
 
-  /* ---------- Update slider position ---------- */
   useEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
@@ -93,7 +90,6 @@ export default function FeaturesVerticalSliderFinal() {
     wrapper.style.transform = `translateY(-${index * cardHeight}px)`;
   }, [index, cardHeight]);
 
-  /* ---------- Autoplay ---------- */
   useEffect(() => {
     const interval = setInterval(() => {
       if (!paused) {
@@ -109,7 +105,6 @@ export default function FeaturesVerticalSliderFinal() {
 
   const next = () => setIndex((i) => (i + 1) % slides.length);
 
-  /* ---------- Touch swipe for mobile ---------- */
   const handleTouchStart = (e) => {
     touchStartY.current = e.touches[0].clientY;
     touchCurrentY.current = e.touches[0].clientY;
@@ -153,7 +148,6 @@ export default function FeaturesVerticalSliderFinal() {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
-        {/* ---------- LEFT COLUMN ---------- */}
         <div className="lg:col-span-5 lg:pl-8 flex flex-col justify-center text-center lg:text-left">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-slate-900 mb-4 leading-tight">
             Streamline and Grow Your <br />
@@ -165,21 +159,21 @@ export default function FeaturesVerticalSliderFinal() {
             supports your sales efforts to maximize success.
           </p>
 
-          <button
-            className="px-6 py-3 bg-[#1C8ECE] text-white rounded-full hover:bg-[#0b6fa3] mx-auto lg:mx-0"
-            aria-label="Explore pricing"
-          >
-            Explore Pricing →
-          </button>
+          <Link
+  to="/pricing"
+  className="px-6 py-3 bg-[#1C8ECE] text-white rounded-full hover:bg-[#0b6fa3] mx-auto lg:mx-0 inline-flex items-center justify-center"
+  aria-label="Explore pricing"
+>
+  Explore Pricing →
+</Link>
+
         </div>
 
-        {/* ---------- RIGHT SLIDER COLUMN ---------- */}
         <div
           className="lg:col-span-7 relative flex flex-col items-stretch"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          {/* ---------- BLUE CARD ---------- */}
           <div
             className="bg-[#1C8ECE] rounded-xl overflow-hidden mx-auto w-full"
             style={{ maxWidth: 720 }}
@@ -232,7 +226,6 @@ export default function FeaturesVerticalSliderFinal() {
             </div>
           </div>
 
-          {/* ---------- DESKTOP CONTROLS ---------- */}
           <div className="hidden sm:flex lg:absolute lg:inset-y-0 lg:left-0 lg:right-0 lg:pointer-events-none">
             <button
               onClick={prev}
@@ -250,8 +243,7 @@ export default function FeaturesVerticalSliderFinal() {
               <span className="text-slate-700 font-bold select-none">↓</span>
             </button>
           </div>
-
-          {/* ---------- MOBILE CONTROLS ---------- */}
+          
           <div className="mt-4 flex items-center justify-center gap-3 sm:hidden">
             <button
               onClick={prev}

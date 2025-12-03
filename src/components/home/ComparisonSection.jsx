@@ -1,4 +1,3 @@
-// src/components/ComparisonSection.jsx
 import React, { useMemo } from "react";
 import logo from "../../assets/logo1.png";
 
@@ -9,10 +8,6 @@ import docsIcon from "../../assets/docs.png";
 import filterIcon from "../../assets/filter.png";
 import calendarIcon from "../../assets/calendar.png";
 import targetIcon from "../../assets/target.png";
-
-/**
- * ComparisonSection — left icons autoplay: attempt-to-form-circle -> scatter -> repeat
- */
 
 export default function ComparisonSection() {
   const icons = [
@@ -33,7 +28,6 @@ export default function ComparisonSection() {
   const outerRadius = 130;
   const innerRadius = 85;
 
-  // deterministic-ish positional jitter for left scattered final coords
   const leftFinals = useMemo(() => {
     const n = icons.length;
     const baseY = 200;
@@ -63,7 +57,7 @@ export default function ComparisonSection() {
         scale,
       };
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, []);
 
   return (
